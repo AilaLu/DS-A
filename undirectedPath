@@ -1,0 +1,44 @@
+//1. undirected path has an array of arrays, make it into a relationship of a graph, where you have a hashmap where the key is a node, and value is all the neighbors, the function "buildGraph"
+//2. then traverse using DFS, track if the nodes has been traversed to avoid cycle
+
+const undirectedPath = (edges, nodeA, nodeB) => {
+  const graph = buildGraph(edges); //helper function to make a hashmap graph 
+  return hasPath(graph, nodeA, nodeB, new Set()); // traverse with DFS, using Set() to track because it's O(1) to find an ele in it instead of array O(n)
+};
+
+//make an adjacency list graph
+const buildGraph = (edges)å => {
+  const graph = {}; //declaire a POJO
+  
+  for (let edge of edges) {
+    const [ a, b ] = edge; //a and b are 2 nodes that has bi-directional relathionship
+    if (!(a in graph)) graph[a] = []; //set key(node) to a value(empty array)
+    if (!(b in graph)) graph[b] = []; 
+    graph[a].push(b); //assign value to the key
+    graph[b].push(a);
+  }
+  
+  return graph;
+};
+
+//recursive DFS traversal
+//base case: src === dst travels through 
+//step: step to the neightbor nodes
+//loop through all neighbors
+//** what's important is to have a variable "visited" which is a Set(), so you know which nodes are traversed so you don't get stuck in a cycle.
+const hasPath = (graph, src, dst, visited) => {
+  if(src === dst) return true
+  // if this node has been traversed
+  if(visited.has(src)) return false
+  // if has not been traversed, add it to the set
+  visited.add(src)
+
+    for(let neighbor of graph[src]){
+        if(hasPath(graph, neighbor, dst, visited) === true) return true
+    }
+  return false
+};
+
+module.exports = {
+  undirectedPath,
+};
